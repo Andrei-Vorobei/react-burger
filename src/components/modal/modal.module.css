@@ -1,8 +1,9 @@
 .modal {
   position: fixed;
-  top: 40%;
+  top: 50%;
   left: 50%;
   width: 720px;
+  padding: 40px 60px;
   background-color: #1c1c21;
   border: 1px solid #4c4cff33;
   border-radius: 40px;
@@ -12,4 +13,18 @@
     0 16px 24px 0 #0000000a,
     0 24px 32px 0 #0000000a;
   transform: translate(-50%, -50%);
+}
+
+.close_icon {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  cursor: pointer;
+}
+
+.modal_title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
 }

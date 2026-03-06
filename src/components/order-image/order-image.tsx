@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-import { order_image1, order_image2, order_image3 } from '@utils/constants';
+import { orderImage1, orderImage2, orderImage3 } from '@utils/constants';
 
 import styles from './order-image.module.css';
 
@@ -12,13 +12,13 @@ export const OrderImage: React.FC<TOrderImage> = ({ Icon }) => {
   return (
     <div className={clsx(styles.images_container, styles.centered)}>
       <div className={clsx(styles.centered, styles.order_image, styles.position_center)}>
-        <img src={order_image1} alt="" />
+        <img src={orderImage1} alt="" />
       </div>
       <div className={clsx(styles.centered, styles.order_image, styles.position_center)}>
-        <img src={order_image2} alt="" />
+        <img src={orderImage2} alt="" />
       </div>
       <div className={clsx(styles.centered, styles.order_image, styles.position_center)}>
-        <img src={order_image3} alt="" />
+        <img src={orderImage3} alt="" />
       </div>
       {Icon && <Icon type="primary" className={styles.check_icon} />}
     </div>

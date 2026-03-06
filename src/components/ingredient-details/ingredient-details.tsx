@@ -1,4 +1,3 @@
-import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 
 import type { TIngredient } from '@utils/types';
@@ -6,26 +5,17 @@ import type { TIngredient } from '@utils/types';
 import styles from './ingredient-details.module.css';
 
 type TModal = {
-  onClose: () => void;
-  ingredient: TIngredient;
+  currentIngredient: TIngredient | null;
 };
 
-export const IngredientDetails: React.FC<TModal> = ({ onClose, ingredient }) => {
+export const IngredientDetails: React.FC<TModal> = ({ currentIngredient }) => {
   return (
-    <div className="pt-10 pl-10 pr-10 pb-15">
-      <div className={styles.modal_title}>
-        <div className="text text_type_main-large">Детали ингредиента</div>
-        <CloseIcon
-          type="primary"
-          onClick={() => onClose()}
-          className={styles.close_icon}
-        />
-      </div>
+    <div>
       <div className={styles.centered}>
-        <img src={ingredient.image_large} alt={ingredient.name} />
+        <img src={currentIngredient?.image_large} alt={currentIngredient?.name} />
       </div>
       <div className={clsx('text text_type_main-medium mt-4 mb-8', styles.centered)}>
-        {ingredient.name}
+        {currentIngredient?.name}
       </div>
       <div className={styles.nutrients}>
         <div className={styles.nutrients_item}>
@@ -43,7 +33,7 @@ export const IngredientDetails: React.FC<TModal> = ({ onClose, ingredient }) => 
               styles.text_align_center
             )}
           >
-            {ingredient.calories}
+            {currentIngredient?.calories}
           </div>
         </div>
         <div className={styles.nutrients_item}>
@@ -61,7 +51,7 @@ export const IngredientDetails: React.FC<TModal> = ({ onClose, ingredient }) => 
               styles.text_align_center
             )}
           >
-            {ingredient.proteins}
+            {currentIngredient?.proteins}
           </div>
         </div>
         <div className={styles.nutrients_item}>
@@ -79,7 +69,7 @@ export const IngredientDetails: React.FC<TModal> = ({ onClose, ingredient }) => 
               styles.text_align_center
             )}
           >
-            {ingredient.fat}
+            {currentIngredient?.fat}
           </div>
         </div>
         <div className={styles.nutrients_item}>
@@ -97,7 +87,7 @@ export const IngredientDetails: React.FC<TModal> = ({ onClose, ingredient }) => 
               styles.text_align_center
             )}
           >
-            {ingredient.carbohydrates}
+            {currentIngredient?.carbohydrates}
           </div>
         </div>
       </div>

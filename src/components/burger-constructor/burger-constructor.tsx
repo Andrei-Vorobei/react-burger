@@ -1,3 +1,4 @@
+import { useModal } from '@/hooks';
 import { burgerConstructor } from '@/utils/burger-constructor';
 import {
   ConstructorElement,
@@ -7,7 +8,6 @@ import {
   Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useCallback, useState } from 'react';
 
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
@@ -25,11 +25,7 @@ export const BurgerConstructor: React.FC<TBurgerConstructorProps> = ({
   // ingredients,
   isLoading,
 }) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
-
-  const handleClick = useCallback((): void => {
-    setShowModal((state) => !state);
-  }, []);
+  const { isModalOpen, openModal, closeModal } = useModal(false);
 
   return (
     <section className={styles.burger_constructor}>
@@ -60,12 +56,12 @@ export const BurgerConstructor: React.FC<TBurgerConstructorProps> = ({
           <div className={clsx('pt-10', styles.button_block)}>
             <div className="text text_type_digits-medium">610</div>
             <CurrencyIcon type={'primary'} className="mr-10 ml-2" />
-            <Button htmlType="button" onClick={handleClick}>
+            <Button htmlType="button" onClick={openModal}>
               Оформить заказ
             </Button>
-            {showModal && (
-              <Modal onClose={handleClick}>
-                <OrderDetails onClose={handleClick} />
+            {isModalOpen && (
+              <Modal onClose={closeModal}>
+                <OrderDetails />
               </Modal>
             )}
           </div>

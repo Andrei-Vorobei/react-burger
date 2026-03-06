@@ -1,9 +1,5 @@
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useCallback, useState } from 'react';
-
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
-import { Modal } from '../modal/modal';
 
 import type { TIngredient } from '@utils/types';
 
@@ -11,18 +7,16 @@ import styles from './ingredient-card.module.css';
 
 type TIngredientCardProps = {
   ingredient: TIngredient;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 };
 
-export const IngredientCard: React.FC<TIngredientCardProps> = ({ ingredient }) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
-
-  const handleClick = useCallback((): void => {
-    setShowModal((state) => !state);
-  }, []);
-
+export const IngredientCard: React.FC<TIngredientCardProps> = ({
+  ingredient,
+  onClick,
+}) => {
   return (
     <>
-      <div className={styles.card} onClick={handleClick}>
+      <div className={styles.card} onClick={onClick}>
         <div className={clsx(styles.centered, 'pl-4 pr-4')}>
           <img
             src={ingredient.image_large}
@@ -38,11 +32,6 @@ export const IngredientCard: React.FC<TIngredientCardProps> = ({ ingredient }) =
         <div className={styles.centered}>{ingredient.name}</div>
         <Counter count={1} />
       </div>
-      {showModal && (
-        <Modal onClose={handleClick}>
-          <IngredientDetails onClose={handleClick} ingredient={ingredient} />
-        </Modal>
-      )}
     </>
   );
 };

@@ -6,6 +6,12 @@ type TuseTab = {
   tabHandler: (value: string) => void;
 };
 
+type TuseModal = {
+  isModalOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+};
+
 export const useTab = (initTab: string): TuseTab => {
   const [tabValue, setTabvalue] = useState(initTab);
 
@@ -30,5 +36,23 @@ export const useTab = (initTab: string): TuseTab => {
     ingredientTitle,
     tabValue,
     tabHandler,
+  };
+};
+
+export const useModal = (initState: boolean): TuseModal => {
+  const [isModalOpen, setIsModalOpen] = useState(initState);
+
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  return {
+    isModalOpen,
+    openModal,
+    closeModal,
   };
 };
