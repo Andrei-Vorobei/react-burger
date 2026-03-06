@@ -1,0 +1,15 @@
+.modal {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  width: 720px;
+  background-color: #1c1c21;
+  border: 1px solid #4c4cff33;
+  border-radius: 40px;
+  box-shadow:
+    0 0 1px 0 #0000000a,
+    0 4px 8px 0 #0000000a,
+    0 16px 24px 0 #0000000a,
+    0 24px 32px 0 #0000000a;
+  transform: translate(-50%, -50%);
+}

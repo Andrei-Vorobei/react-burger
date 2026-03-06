@@ -1,0 +1,13 @@
+.close_icon {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  cursor: pointer;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}

@@ -1,0 +1,31 @@
+.modal_title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text_align_center {
+  text-align: center;
+}
+
+.nutrients {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.nutrients_item {
+  min-width: 112px;
+}
+
+.close_icon {
+  cursor: pointer;
+}
