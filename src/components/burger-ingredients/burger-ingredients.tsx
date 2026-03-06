@@ -30,10 +30,15 @@ export const BurgerIngredients: React.FC<TBurgerIngredientsProps> = ({
     openModal();
   };
 
+  const onClose = (): void => {
+    closeModal();
+    setCurrentIngredient(null);
+  };
+
   return (
     <section className={styles.burger_ingredients}>
       {isModalOpen && (
-        <Modal onClose={closeModal} title="Детали ингредиента">
+        <Modal onClose={onClose} title="Детали ингредиента">
           <IngredientDetails currentIngredient={currentIngredient} />
         </Modal>
       )}
