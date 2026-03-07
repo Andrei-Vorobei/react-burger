@@ -4,10 +4,11 @@ import {
   Logo,
   ProfileIcon,
 } from '@krgaa/react-developer-burger-ui-components';
+import { memo } from 'react';
 
 import styles from './app-header.module.css';
 
-export const AppHeader = (): React.JSX.Element => {
+export const AppHeader: React.FC = memo(() => {
   return (
     <header className={styles.header}>
       <nav className={`${styles.menu} p-4`}>
@@ -32,4 +33,6 @@ export const AppHeader = (): React.JSX.Element => {
       </nav>
     </header>
   );
-};
+});
+
+AppHeader.displayName = 'AppHeader';

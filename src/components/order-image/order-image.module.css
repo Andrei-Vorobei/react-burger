@@ -1,0 +1,27 @@
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.position_center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.images_container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.order_image {
+  position: absolute;
+}
+
+.check_icon {
+  width: 48px;
+  height: 48px;
+}
