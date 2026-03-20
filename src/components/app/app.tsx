@@ -1,4 +1,3 @@
-import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { clsx } from 'clsx';
 
 import { AppHeader } from '@components/app-header/app-header';
@@ -8,19 +7,6 @@ import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredi
 import styles from './app.module.css';
 
 export const App: React.FC = () => {
-  const {
-    data: { data: ingredients = [] } = { data: [] },
-    isLoading,
-    isError,
-  } = useGetIngredientsQuery('', {
-    // pollingInterval: 3000,
-    skipPollingIfUnfocused: true,
-  });
-
-  if (!isLoading && isError) {
-    return <h2>{`Ошибка: ${isError}`}</h2>;
-  }
-
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -28,8 +14,8 @@ export const App: React.FC = () => {
         Соберите бургер
       </h1>
       <main className={styles.main}>
-        <BurgerIngredients ingredients={ingredients} isLoading={isLoading} />
-        <BurgerConstructor isLoading={isLoading} />
+        <BurgerIngredients />
+        <BurgerConstructor />
       </main>
     </div>
   );

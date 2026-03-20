@@ -12,11 +12,7 @@ import {
   getOrderNumber,
   getBurgerName,
 } from '@/services/ingredients/reduser';
-import {
-  Button,
-  CurrencyIcon,
-  Preloader,
-} from '@krgaa/react-developer-burger-ui-components';
+import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -26,11 +22,7 @@ import { OrderDetails } from '../order-details/order-details';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  isLoading: boolean;
-};
-
-export const BurgerConstructor: React.FC<TBurgerConstructorProps> = ({ isLoading }) => {
+export const BurgerConstructor: React.FC = () => {
   const dispatch = useDispatch();
   const { isModalOpen, openModal, closeModal } = useModal(false);
   const burgerConstructor = useSelector(getBurgerConstructor);
@@ -61,47 +53,43 @@ export const BurgerConstructor: React.FC<TBurgerConstructorProps> = ({ isLoading
 
   return (
     <section className={styles.burger_constructor}>
-      {isLoading ? (
-        <Preloader />
-      ) : (
-        <div>
-          <IngredientContainer
-            ingredient={burgerConstructor.bun}
-            position="top"
-            isLocked
-          />
-          {!burgerConstructor.ingredients.length ? (
-            <IngredientContainer />
-          ) : (
-            <ul className={clsx(styles.ingredient_list, 'custom-scroll')}>
-              {burgerConstructor.ingredients.map((item) => {
-                return (
-                  <li key={item.id} className={styles.ingredient_item}>
-                    <IngredientContainer ingredient={item} />
-                  </li>
-                );
-              })}
-            </ul>
+      <div>
+        <IngredientContainer
+          ingredient={burgerConstructor.bun}
+          position="top"
+          isLocked
+        />
+        {!burgerConstructor.ingredients.length ? (
+          <IngredientContainer />
+        ) : (
+          <ul className={clsx(styles.ingredient_list, 'custom-scroll')}>
+            {burgerConstructor.ingredients.map((item) => {
+              return (
+                <li key={item.id} className={styles.ingredient_item}>
+                  <IngredientContainer ingredient={item} />
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <IngredientContainer
+          ingredient={burgerConstructor.bun}
+          position="bottom"
+          isLocked
+        />
+        <div className={clsx('pt-10', styles.button_block)}>
+          <div className="text text_type_digits-medium">{orderPrice}</div>
+          <CurrencyIcon type={'primary'} className="mr-10 ml-2" />
+          <Button htmlType="button" onClick={postOrderHandler}>
+            Оформить заказ
+          </Button>
+          {isModalOpen && (
+            <Modal onClose={closeOrderModal} title={burgerName}>
+              <OrderDetails orderNumber={orderNumber} />
+            </Modal>
           )}
-          <IngredientContainer
-            ingredient={burgerConstructor.bun}
-            position="bottom"
-            isLocked
-          />
-          <div className={clsx('pt-10', styles.button_block)}>
-            <div className="text text_type_digits-medium">{orderPrice}</div>
-            <CurrencyIcon type={'primary'} className="mr-10 ml-2" />
-            <Button htmlType="button" onClick={postOrderHandler}>
-              Оформить заказ
-            </Button>
-            {isModalOpen && (
-              <Modal onClose={closeOrderModal} title={burgerName}>
-                <OrderDetails orderNumber={orderNumber} />
-              </Modal>
-            )}
-          </div>
         </div>
-      )}
+      </div>
     </section>
   );
 };

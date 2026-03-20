@@ -1,5 +1,6 @@
 import { useModal } from '@/hooks';
 import { ingredientModal } from '@/services/ingredients/actions';
+import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { getIngredient, getCounts } from '@/services/ingredients/reduser';
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
@@ -15,16 +16,16 @@ import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
+export const BurgerIngredients: React.FC = () => {
+  const {
+    data: { data: ingredients = [] } = { data: [] },
+    isLoading,
+    isError,
+  } = useGetIngredientsQuery('', {
+    // pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
-  isLoading: boolean;
-};
-
-export const BurgerIngredients: React.FC<TBurgerIngredientsProps> = ({
-  ingredients,
-  isLoading,
-}) => {
   const { isModalOpen, openModal, closeModal } = useModal(false);
   const [tabValue, setTabvalue] = useState('bun');
   const bunRef = useRef<HTMLDivElement>(null);
@@ -81,6 +82,10 @@ export const BurgerIngredients: React.FC<TBurgerIngredientsProps> = ({
     },
     [bunRef, mainRef, sauceRef]
   );
+
+  if (!isLoading && isError) {
+    return <h2>{`Ошибка: ${isError}`}</h2>;
+  }
 
   return (
     <section className={styles.burger_ingredients}>
