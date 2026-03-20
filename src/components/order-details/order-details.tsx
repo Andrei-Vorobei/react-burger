@@ -6,10 +6,16 @@ import { OrderImage } from '@components/order-image/order-image';
 
 import styles from './order-details.module.css';
 
-export const OrderDetails: React.FC = memo(() => {
+type TOrderDetailsProps = {
+  orderNumber: number | null | undefined;
+};
+
+export const OrderDetails: React.FC<TOrderDetailsProps> = memo(({ orderNumber }) => {
   return (
     <div>
-      <div className={clsx('text text_type_digits-large', styles.centered)}>034536</div>
+      <div className={clsx('text text_type_digits-large', styles.centered)}>
+        {orderNumber}
+      </div>
       <div className={clsx('text text_type_main-medium mt-8 mb-15', styles.centered)}>
         идентификатор заказа
       </div>

@@ -1,0 +1,33 @@
+.empty_element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 536px;
+  height: 80px;
+  background-color: #1c1c21;
+}
+
+.top_element {
+  border-radius: 88px 88px 40px 40px;
+}
+
+.bottom_element {
+  border-radius: 40px 40px 88px 88px;
+}
+
+.middle_element {
+  margin-right: 16px;
+  border-radius: 40px;
+}
+
+.drag_button {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  min-width: 24px;
+  margin-right: 8px;
+}
+
+.is_over {
+  border: 2px dashed #4c4cff;
+}

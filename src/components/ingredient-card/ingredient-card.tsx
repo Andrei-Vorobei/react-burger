@@ -1,5 +1,7 @@
 import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
+import { useMemo } from 'react';
+import { useDrag } from 'react-dnd';
 
 import type { TIngredient } from '@utils/types';
 
@@ -8,15 +10,40 @@ import styles from './ingredient-card.module.css';
 type TIngredientCardProps = {
   ingredient: TIngredient;
   onClick: React.MouseEventHandler<HTMLDivElement>;
+  counts: Record<string, number>;
 };
 
 export const IngredientCard: React.FC<TIngredientCardProps> = ({
   ingredient,
   onClick,
+  counts,
 }) => {
+  const ingrdientType = useMemo(() => {
+    if (ingredient.type === 'bun') {
+      return 'bun';
+    }
+    if (ingredient.type === 'sauce' || ingredient.type === 'main') {
+      return 'main';
+    }
+
+    return '';
+  }, [ingredient]);
+
+  const [{ isDragging }, dragRef] = useDrag({
+    type: ingrdientType,
+    item: ingredient,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
   return (
     <>
-      <div className={styles.card} onClick={onClick}>
+      <div
+        className={clsx(styles.card, { [styles.is_dragging]: isDragging })}
+        onClick={onClick}
+        ref={dragRef as unknown as React.RefObject<HTMLDivElement>}
+      >
         <div className={clsx(styles.centered, 'pl-4 pr-4')}>
           <img
             src={ingredient.image_large}
@@ -30,7 +57,7 @@ export const IngredientCard: React.FC<TIngredientCardProps> = ({
           <CurrencyIcon type="primary" />
         </div>
         <div className={styles.centered}>{ingredient.name}</div>
-        <Counter count={1} />
+        {counts[ingredient._id] && <Counter count={counts[ingredient._id]} />}
       </div>
     </>
   );
