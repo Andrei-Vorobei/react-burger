@@ -19,18 +19,13 @@
   align-items: center;
   gap: 16px;
   max-height: 656px;
-  overflow-y: auto;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  overflow-y: scroll;
 }
 
 .button_block {
   display: flex;
   justify-content: end;
   align-items: center;
-}
-
-.drag_button {
-  display: flex;
-  align-items: center;
-  min-width: 24px;
-  margin-right: 8px;
 }

@@ -1,44 +1,25 @@
-import { getIngredientsURL } from '@/utils/constants';
-import axios, { isCancel } from 'axios';
+import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { clsx } from 'clsx';
-import { useEffect, useState } from 'react';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 
-import type { TIngredient } from '@utils/types';
-
 import styles from './app.module.css';
 
 export const App: React.FC = () => {
-  const [ingredients, setIngredients] = useState<TIngredient[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    data: { data: ingredients = [] } = { data: [] },
+    isLoading,
+    isError,
+  } = useGetIngredientsQuery('', {
+    // pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
-  useEffect(() => {
-    const controller = new AbortController();
-    setIsLoading(true);
-
-    axios
-      .get(getIngredientsURL, {
-        signal: controller.signal,
-      })
-      .then((response) => {
-        setIngredients((response?.data?.data ?? []) as TIngredient[]);
-      })
-      .catch((err) => {
-        if (!isCancel(err)) {
-          console.error(err);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
-    return (): void => {
-      controller.abort();
-    };
-  }, []);
+  if (!isLoading && isError) {
+    return <h2>{`Ошибка: ${isError}`}</h2>;
+  }
 
   return (
     <div className={styles.app}>
@@ -48,7 +29,7 @@ export const App: React.FC = () => {
       </h1>
       <main className={styles.main}>
         <BurgerIngredients ingredients={ingredients} isLoading={isLoading} />
-        <BurgerConstructor ingredients={ingredients} isLoading={isLoading} />
+        <BurgerConstructor isLoading={isLoading} />
       </main>
     </div>
   );

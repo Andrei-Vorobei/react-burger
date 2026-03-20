@@ -9,3 +9,7 @@
   position: relative;
   cursor: pointer;
 }
+
+.is_dragging {
+  opacity: 0.5;
+}

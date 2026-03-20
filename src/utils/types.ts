@@ -11,4 +11,5 @@ export type TIngredient = {
   image_large: string;
   image_mobile: string;
   __v: number;
+  id?: string;
 };

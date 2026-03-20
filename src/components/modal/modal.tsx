@@ -1,4 +1,5 @@
 import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
+import { clsx } from 'clsx';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -36,7 +37,11 @@ export const Modal: React.FC<TModal> = ({ children, onClose, title }) => {
           className={styles.close_icon}
         />
         <div className={styles.modal_title}>
-          {title && <div className="text text_type_main-large">{title}</div>}
+          {title && (
+            <div className={clsx(styles.title, 'text text_type_main-large pt-1 pb-1')}>
+              {title}
+            </div>
+          )}
         </div>
         {children}
       </div>
