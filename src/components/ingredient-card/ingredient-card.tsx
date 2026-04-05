@@ -2,6 +2,7 @@ import { CurrencyIcon, Counter } from '@krgaa/react-developer-burger-ui-componen
 import { clsx } from 'clsx';
 import { useMemo } from 'react';
 import { useDrag } from 'react-dnd';
+import { Link, useLocation } from 'react-router';
 
 import type { TIngredient } from '@utils/types';
 
@@ -9,15 +10,15 @@ import styles from './ingredient-card.module.css';
 
 type TIngredientCardProps = {
   ingredient: TIngredient;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
   counts: Record<string, number>;
 };
 
 export const IngredientCard: React.FC<TIngredientCardProps> = ({
   ingredient,
-  onClick,
   counts,
 }) => {
+  const location = useLocation();
+
   const ingrdientType = useMemo(() => {
     if (ingredient.type === 'bun') {
       return 'bun';
@@ -38,10 +39,9 @@ export const IngredientCard: React.FC<TIngredientCardProps> = ({
   });
 
   return (
-    <>
+    <Link to={`/ingredients/${ingredient._id}`} state={{ background: location }}>
       <div
         className={clsx(styles.card, { [styles.is_dragging]: isDragging })}
-        onClick={onClick}
         ref={dragRef as unknown as React.RefObject<HTMLDivElement>}
       >
         <div className={clsx(styles.centered, 'pl-4 pr-4')}>
@@ -59,6 +59,6 @@ export const IngredientCard: React.FC<TIngredientCardProps> = ({
         <div className={styles.centered}>{ingredient.name}</div>
         {counts[ingredient._id] && <Counter count={counts[ingredient._id]} />}
       </div>
-    </>
+    </Link>
   );
 };

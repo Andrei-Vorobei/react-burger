@@ -1,16 +1,18 @@
+import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { clsx } from 'clsx';
+import { useParams } from 'react-router';
 
-import type { TIngredient } from '@utils/types';
+import styles from './ingredients-details-page.module.css';
 
-import styles from './ingredient-details.module.css';
+export const IngredientDetailsPage: React.FC = () => {
+  const { id } = useParams();
+  const { data: { data: ingredients = [] } = { data: [] } } = useGetIngredientsQuery('');
 
-type TModal = {
-  currentIngredient: TIngredient | null | undefined;
-};
+  const currentIngredient = ingredients.find((ingredient) => ingredient._id === id);
 
-export const IngredientDetails: React.FC<TModal> = ({ currentIngredient }) => {
   return (
-    <div>
+    <div className={styles.container}>
+      <h1 className="text text_type_main-large">Детали ингредиента</h1>
       <div className={styles.centered}>
         <img src={currentIngredient?.image_large} alt={currentIngredient?.name} />
       </div>

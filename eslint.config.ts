@@ -56,6 +56,8 @@ export default defineConfig(
       'unused-imports': unusedImports,
     },
     rules: {
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -151,6 +153,10 @@ export default defineConfig(
       react: {
         version: 'detect',
       },
+      "import/extensions": [
+        ".ts",
+        ".tsx"
+      ],
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
