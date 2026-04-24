@@ -1,18 +1,15 @@
-import { useModal } from '@/hooks';
+import { useAppDispatch, useAppSelector, useModal } from '@/hooks';
 import { ingredientModal } from '@/services/ingredients/actions';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
 import { getIngredient, getCounts } from '@/services/ingredients/reduser';
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { IngredientCard } from '@components/ingredient-card/ingredient-card';
 
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Modal } from '../modal/modal';
-
-import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
@@ -26,18 +23,14 @@ export const BurgerIngredients: React.FC = () => {
     skipPollingIfUnfocused: true,
   });
 
-  const { isModalOpen, openModal, closeModal } = useModal(false);
+  const { isModalOpen, closeModal } = useModal(false);
   const [tabValue, setTabvalue] = useState('bun');
   const bunRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const sauceRef = useRef<HTMLDivElement>(null);
-  const currentIngredient = useSelector(getIngredient);
-  const counts = useSelector(getCounts);
-  const dispatch = useDispatch();
-  const onClick = (ingredient: TIngredient): void => {
-    dispatch(ingredientModal(ingredient));
-    openModal();
-  };
+  const currentIngredient = useAppSelector(getIngredient);
+  const counts = useAppSelector(getCounts);
+  const dispatch = useAppDispatch();
 
   const onClose = (): void => {
     closeModal();
@@ -142,11 +135,7 @@ export const BurgerIngredients: React.FC = () => {
             {bun.map((item) => {
               return (
                 <li key={item._id}>
-                  <IngredientCard
-                    ingredient={item}
-                    onClick={() => onClick(item)}
-                    counts={counts}
-                  />
+                  <IngredientCard ingredient={item} counts={counts} />
                 </li>
               );
             })}
@@ -158,11 +147,7 @@ export const BurgerIngredients: React.FC = () => {
             {sauce.map((item) => {
               return (
                 <li key={item._id}>
-                  <IngredientCard
-                    ingredient={item}
-                    onClick={() => onClick(item)}
-                    counts={counts}
-                  />
+                  <IngredientCard ingredient={item} counts={counts} />
                 </li>
               );
             })}
@@ -174,11 +159,7 @@ export const BurgerIngredients: React.FC = () => {
             {main.map((item) => {
               return (
                 <li key={item._id}>
-                  <IngredientCard
-                    ingredient={item}
-                    onClick={() => onClick(item)}
-                    counts={counts}
-                  />
+                  <IngredientCard ingredient={item} counts={counts} />
                 </li>
               );
             })}

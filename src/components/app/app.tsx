@@ -1,8 +1,8 @@
+import { useAppDispatch } from '@/hooks';
 import { Home } from '@/pages/home/home';
 import { IngredientDetailsPage } from '@/pages/ingredients-details-page/ingredients-details-page';
 import { checkUserAuth } from '@/services/auth/actions';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Routes, Route, useLocation } from 'react-router';
 
 import { ProtectedRoute } from '@components/protected-route/protected-route';
@@ -20,7 +20,7 @@ import { ModalIngredient } from '../modal-ingredient/modal-ingredient';
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const background = location.state?.background;
 

@@ -6,7 +6,7 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import clsx from 'clsx';
 import { memo } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, Link } from 'react-router';
 
 import styles from './app-header.module.css';
 
@@ -34,9 +34,9 @@ export const AppHeader: React.FC = memo(() => {
             <p className="text text_type_main-default ml-2">Лента заказов</p>
           </NavLink>
         </div>
-        <div className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <Logo />
-        </div>
+        </Link>
         <NavLink
           to="/profile"
           className={({ isActive }) =>

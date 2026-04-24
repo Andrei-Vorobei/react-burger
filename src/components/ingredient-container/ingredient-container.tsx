@@ -1,3 +1,4 @@
+import { useAppDispatch } from '@/hooks';
 import {
   removeIngredient,
   setBuns,
@@ -11,7 +12,6 @@ import {
 import { clsx } from 'clsx';
 import { useMemo } from 'react';
 import { useDrop, useDrag } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { EmptyElement } from '../epmtyElement/empty-element';
 
@@ -30,7 +30,7 @@ export const IngredientContainer: React.FC<TIngredientContainerProps> = ({
   position,
   isLocked,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ingredientType = useMemo(() => {
     if (position === 'top' || position === 'bottom') {
       return 'bun';
@@ -80,6 +80,16 @@ export const IngredientContainer: React.FC<TIngredientContainerProps> = ({
     }
   };
 
+  const getIngredientName = (name: string): string => {
+    if (position === 'top') {
+      return `${name} (верх)`;
+    }
+    if (position === 'bottom') {
+      return `${name} (низ)`;
+    }
+    return name;
+  };
+
   return (
     <div
       className={clsx(styles.ingredient_item, 'mr-1', { ['pt-4 pb-4']: !position })}
@@ -104,7 +114,7 @@ export const IngredientContainer: React.FC<TIngredientContainerProps> = ({
               <ConstructorElement
                 extraClass={clsx({ [styles.is_over_replace]: isOverDrop })}
                 handleClose={() => removeHandler(ingredient.id)}
-                text={ingredient.name}
+                text={getIngredientName(ingredient.name)}
                 thumbnail={ingredient.image}
                 price={ingredient?.price ?? 0}
                 type={position}
