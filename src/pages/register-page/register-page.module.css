@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: 100%;
+  padding-top: 180px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 24px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 16px;
+  padding-top: 80px;
+  color: #8585ad;
+}
+
+.link {
+  margin-left: 8px;
+  color: #4c4cff;
+}

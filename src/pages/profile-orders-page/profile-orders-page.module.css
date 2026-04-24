@@ -1,0 +1,41 @@
+.container {
+  position: relative;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 120px;
+}
+
+.links {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 60px);
+  width: 320px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  cursor: pointer;
+}
+
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 480px;
+  text-align: center;
+}
+
+.img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

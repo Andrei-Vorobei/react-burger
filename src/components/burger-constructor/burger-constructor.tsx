@@ -10,35 +10,48 @@ import {
   getOrderPrice,
   getOrderList,
   getOrderNumber,
-  getBurgerName,
 } from '@/services/ingredients/reduser';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { IngredientContainer } from '../ingredient-container/ingredient-container';
-import { Modal } from '../modal/modal';
-import { OrderDetails } from '../order-details/order-details';
+import { IngredientContainer } from '@components/ingredient-container/ingredient-container';
+import { ModalLogin } from '@components/modal-login/modal-login';
+import { Modal } from '@components/modal/modal';
+import { OrderDetails } from '@components/order-details/order-details';
+import { selectIsAuthChecked, selectUser } from '@services/auth/reduser';
 
 import styles from './burger-constructor.module.css';
+
+const initModalState = { title: '', content: '' };
 
 export const BurgerConstructor: React.FC = () => {
   const dispatch = useDispatch();
   const { isModalOpen, openModal, closeModal } = useModal(false);
+  const [modalState, setModalState] = useState(initModalState);
   const burgerConstructor = useSelector(getBurgerConstructor);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useSelector(selectUser);
   const orderPrice = useSelector(getOrderPrice);
   const orderList = useSelector(getOrderList);
   const orderNumber = useSelector(getOrderNumber);
-  const burgerName = useSelector(getBurgerName);
   const [postOrder] = usePostOrderMutation();
+
   const postOrderHandler = (): void => {
-    if (!burgerConstructor.bun) return;
+    if (!user && isAuthChecked) {
+      setModalState({ title: 'Авторизуйтесь', content: 'auth' });
+      openModal();
+      return;
+    }
+
     postOrder({ ingredients: orderList })
       .then(({ data }) => {
         const orderNumber = data?.order.number;
         const burgerName = data?.name ?? '';
         dispatch(setOrderNumber(orderNumber));
         dispatch(setBurgerName(burgerName));
+        setModalState({ title: burgerName, content: 'order' });
         openModal();
       })
       .catch((err) => {
@@ -46,9 +59,16 @@ export const BurgerConstructor: React.FC = () => {
       });
   };
 
+  const onCloseLoginModal = (): void => {
+    closeModal();
+  };
+
   const closeOrderModal = (): void => {
     closeModal();
-    dispatch(clearConstructor());
+    if (modalState.content === 'order') {
+      setModalState(initModalState);
+      dispatch(clearConstructor());
+    }
   };
 
   return (
@@ -80,12 +100,21 @@ export const BurgerConstructor: React.FC = () => {
         <div className={clsx('pt-10', styles.button_block)}>
           <div className="text text_type_digits-medium">{orderPrice}</div>
           <CurrencyIcon type={'primary'} className="mr-10 ml-2" />
-          <Button htmlType="button" onClick={postOrderHandler}>
+          <Button
+            htmlType="button"
+            onClick={postOrderHandler}
+            disabled={!burgerConstructor.bun}
+          >
             Оформить заказ
           </Button>
           {isModalOpen && (
-            <Modal onClose={closeOrderModal} title={burgerName}>
-              <OrderDetails orderNumber={orderNumber} />
+            <Modal onClose={closeOrderModal} title={modalState.title}>
+              {modalState.content === 'order' && (
+                <OrderDetails orderNumber={orderNumber} />
+              )}
+              {modalState.content === 'auth' && (
+                <ModalLogin onClose={onCloseLoginModal} />
+              )}
             </Modal>
           )}
         </div>

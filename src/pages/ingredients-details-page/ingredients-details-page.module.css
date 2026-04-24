@@ -1,0 +1,29 @@
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text_align_center {
+  text-align: center;
+}
+
+.nutrients {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.nutrients_item {
+  min-width: 112px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  height: 100%;
+  padding-top: 120px;
+}
