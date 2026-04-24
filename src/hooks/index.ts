@@ -1,6 +1,9 @@
 import { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { validators } from '@utils/validators';
+
+import type { AppDispatch, RootState } from '@/services/store';
 
 type TypeModal = {
   isModalOpen: boolean;
@@ -102,3 +105,6 @@ function validateForm(
     })
   );
 }
+
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();

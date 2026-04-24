@@ -1,4 +1,4 @@
-import { useModal } from '@/hooks';
+import { useAppDispatch, useAppSelector, useModal } from '@/hooks';
 import {
   setOrderNumber,
   clearConstructor,
@@ -14,7 +14,6 @@ import {
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { IngredientContainer } from '@components/ingredient-container/ingredient-container';
 import { ModalLogin } from '@components/modal-login/modal-login';
@@ -27,15 +26,15 @@ import styles from './burger-constructor.module.css';
 const initModalState = { title: '', content: '' };
 
 export const BurgerConstructor: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { isModalOpen, openModal, closeModal } = useModal(false);
   const [modalState, setModalState] = useState(initModalState);
-  const burgerConstructor = useSelector(getBurgerConstructor);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
-  const user = useSelector(selectUser);
-  const orderPrice = useSelector(getOrderPrice);
-  const orderList = useSelector(getOrderList);
-  const orderNumber = useSelector(getOrderNumber);
+  const burgerConstructor = useAppSelector(getBurgerConstructor);
+  const isAuthChecked = useAppSelector(selectIsAuthChecked);
+  const user = useAppSelector(selectUser);
+  const orderPrice = useAppSelector(getOrderPrice);
+  const orderList = useAppSelector(getOrderList);
+  const orderNumber = useAppSelector(getOrderNumber);
   const [postOrder] = usePostOrderMutation();
 
   const postOrderHandler = (): void => {

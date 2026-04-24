@@ -1,7 +1,7 @@
+import { useAppDispatch } from '@/hooks';
 import { clsx } from 'clsx';
 import { useMemo } from 'react';
 import { useDrop } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 
 import { setBuns, setIngredient } from '@services/ingredients/actions';
 
@@ -16,7 +16,7 @@ type TEmptyElementProps = {
 };
 
 export const EmptyElement: React.FC<TEmptyElementProps> = ({ position }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ingredientType = useMemo(() => {
     if (position === 'top' || position === 'bottom') {
       return 'bun';

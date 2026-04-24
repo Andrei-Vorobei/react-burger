@@ -1,8 +1,7 @@
-import { useFormWithValidation } from '@/hooks';
+import { useAppDispatch, useAppSelector, useFormWithValidation } from '@/hooks';
 import { Button, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useMatch } from 'react-router';
 
 import { ProfileInput } from '@components/UI/profile-input/profile-input';
@@ -23,11 +22,11 @@ const initEditingState = {
 };
 
 export const ProfilePage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const matches = useMatch('/profile');
   const [editProfile, { isLoading }] = useEditeProfileMutation();
   const [logout] = useLogoutMutation();
-  const user = useSelector(selectUser);
+  const user = useAppSelector(selectUser);
 
   const [userData] = useState<TUser | null>(user);
   const [isEditing, setIsEditing] = useState(initEditingState);
