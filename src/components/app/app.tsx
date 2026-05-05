@@ -13,19 +13,21 @@ import { ProfileOrdersPage } from '@pages/profile-orders-page/profile-orders-pag
 import { ProfilePage } from '@pages/profile-page/profile-page';
 import { RegisterPage } from '@pages/register-page/register-page';
 import { ResetPasswordPage } from '@pages/reset-password-page/reset-password-page';
+import { useGetOrdersListQuery } from '@services/socket/api';
 
 import { Layout } from '../layout/layout';
 import { ModalIngredient } from '../modal-ingredient/modal-ingredient';
-
-import type { UnknownAction } from '@reduxjs/toolkit';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const background = location.state?.background;
+  const data = useGetOrdersListQuery('');
+
+  console.log('useGetOrdersListQuery: ', data);
 
   useEffect(() => {
-    dispatch(checkUserAuth() as unknown as UnknownAction);
+    void dispatch(checkUserAuth());
   }, [dispatch]);
 
   return (

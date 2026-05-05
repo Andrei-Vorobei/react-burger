@@ -56,6 +56,7 @@ export default defineConfig(
       'unused-imports': unusedImports,
     },
     rules: {
+      '@typescript-eslint/unbound-method': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
