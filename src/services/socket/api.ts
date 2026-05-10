@@ -1,6 +1,14 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, type BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
-type TOrder = {
+import { baseUrlSocket, webSocketUrl } from '@utils/constants';
+
+import { refreshToken } from '../auth/api';
+
+import type { AxiosError, AxiosRequestConfig } from 'axios';
+
+export type TOrder = {
   ingredients: string[];
   _id: string;
   status: string;
@@ -17,82 +25,181 @@ type TOrdersListResponse = {
   success: boolean;
 };
 
-let socket: WebSocket | null = null;
-const RECONNECT_PERIOD = 3000; // Пауза 3 секунды
-let reconnectTimerId: ReturnType<typeof setTimeout> | null = null;
-// Флаг, который показывает, что компонент больше не ждёт данных
-let isUnsubscribed = false;
+const axiosBaseQuery =
+  (
+    { baseUrl }: { baseUrl: string } = { baseUrl: '' }
+  ): BaseQueryFn<
+    {
+      url: string;
+      method?: AxiosRequestConfig['method'];
+      data?: AxiosRequestConfig['data'];
+      params?: AxiosRequestConfig['params'];
+      headers?: AxiosRequestConfig['headers'];
+    },
+    unknown,
+    unknown
+  > =>
+  async ({ url, method, data, params, headers }) => {
+    try {
+      const result = await axios({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        headers,
+      });
+      return { data: result.data };
+    } catch (axiosError) {
+      const err = axiosError as AxiosError;
+      return {
+        error: {
+          status: err.response?.status,
+          data: err.response?.data ?? err.message,
+        },
+      };
+    }
+  };
+
+let socketOrders: WebSocket | null = null;
+let socketUserOrders: WebSocket | null = null;
+const RECONNECT_PERIOD = 3000;
+let reconnectTimerIdOrders: ReturnType<typeof setTimeout> | null = null;
+let reconnectTimerIdUserOrders: ReturnType<typeof setTimeout> | null = null;
+let isUnsubscribedOrders = false;
+let isUnsubscribedUserOrders = false;
 
 export const socketApi = createApi({
   reducerPath: 'socket',
-  baseQuery: fetchBaseQuery(),
+  baseQuery: axiosBaseQuery({
+    baseUrl: baseUrlSocket,
+  }),
   endpoints: (builder) => ({
     getOrdersList: builder.query<TOrdersListResponse, string>({
-      query: () => 'messages',
+      query: () => ({
+        url: '/orders/all',
+        method: 'GET',
+      }),
       onCacheEntryAdded: async (
         _arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) => {
-        // 1. Создаём функцию для установки соединения.
         const connect = (): void => {
-          // Очищаем предыдущий таймер перед попыткой подключения
-          if (reconnectTimerId !== null) {
-            clearTimeout(reconnectTimerId);
-            reconnectTimerId = null;
+          if (reconnectTimerIdOrders !== null) {
+            clearTimeout(reconnectTimerIdOrders);
+            reconnectTimerIdOrders = null;
           }
 
-          // Устанавливаем новое соединение
-          socket = new WebSocket(
-            'wss://new-stellarburgers.education-services.ru/orders/all'
-          );
-          // 1. Слушатель входящих сообщений (обновление кеша).
-          socket.onmessage = (event: MessageEvent): void => {
-            const data = JSON.parse(event.data) as TOrder;
-            updateCachedData((draft) => {
-              draft.orders.push(data);
+          socketOrders = new WebSocket(`${webSocketUrl}/all`);
+
+          const listener = (event: MessageEvent): void => {
+            const data = JSON.parse(event.data);
+
+            updateCachedData(() => {
+              return data;
             });
           };
-          // 2. Логика перепodключения при закрытии.
-          socket.onclose = (): void => {
+
+          socketOrders.addEventListener('message', listener);
+          socketOrders.onclose = (): void => {
             console.log(
               'Соединение разорвано. Проверка необходимости перепodключения...'
             );
 
-            // Если isUnsubscribed === false, то компонент всё ещё ждёт данные
-            if (!isUnsubscribed) {
-              // Запускаем таймер и через 3 секунды пробуем снова
-              reconnectTimerId = setTimeout(connect, RECONNECT_PERIOD);
+            if (!isUnsubscribedOrders) {
+              reconnectTimerIdOrders = setTimeout(connect, RECONNECT_PERIOD);
             }
           };
 
-          socket.onerror = (error: Event): void => {
+          socketOrders.onerror = (error: Event): void => {
             console.error('Ошибка WebSocket:', error);
           };
         };
 
-        try {
-          await cacheDataLoaded;
+        await cacheDataLoaded;
+        connect();
 
-          connect();
-        } catch (error) {
-          console.error(error);
-        }
-        // Ожидаем, пока компонент отпишется от кеша
         try {
           await cacheEntryRemoved;
         } finally {
-          // 1. Устанавливаем флаг: теперь мы не должны переподключаться.
-          isUnsubscribed = true;
-
-          // 2. Гарантированная очистка ресурсов:
-          if (reconnectTimerId !== null) {
-            clearTimeout(reconnectTimerId); // Отменяем ожидающее переподключение
+          isUnsubscribedOrders = false;
+          if (reconnectTimerIdOrders !== null) {
+            clearTimeout(reconnectTimerIdOrders);
           }
-          socket?.close(); // Закрываем активный сокет
+          socketOrders?.close();
+        }
+      },
+    }),
+    getUserOrders: builder.query<TOrdersListResponse, string>({
+      query: () => ({
+        url: '/orders',
+        method: 'GET',
+        headers: {
+          authorization: Cookies.get('accessToken'),
+        },
+      }),
+      onCacheEntryAdded: async (
+        _arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) => {
+        const connect = (): void => {
+          if (reconnectTimerIdUserOrders !== null) {
+            clearTimeout(reconnectTimerIdUserOrders);
+            reconnectTimerIdUserOrders = null;
+          }
+          const token = Cookies.get('accessToken');
+          const wssUrl = new URL(webSocketUrl);
+          wssUrl.searchParams.set('token', token?.replace('Bearer ', '') ?? '');
+          socketUserOrders = new WebSocket(wssUrl.toString());
+
+          socketUserOrders.onmessage = async (event): Promise<void> => {
+            const data = JSON.parse(event.data);
+
+            if (data.message === 'Invalid or missing token') {
+              try {
+                await refreshToken();
+                socketUserOrders?.close();
+                connect();
+              } catch (error) {
+                console.error('Не удалось обновить токен:', error);
+              }
+              return;
+            }
+
+            updateCachedData(() => {
+              return data;
+            });
+          };
+
+          socketUserOrders.onclose = (): void => {
+            console.log(
+              'Соединение разорвано. Проверка необходимости перепodключения...'
+            );
+
+            if (!isUnsubscribedUserOrders) {
+              reconnectTimerIdUserOrders = setTimeout(connect, RECONNECT_PERIOD);
+            }
+          };
+
+          socketUserOrders.onerror = (error: Event): void => {
+            console.error('Ошибка WebSocket:', error);
+          };
+        };
+
+        await cacheDataLoaded;
+        connect();
+
+        try {
+          await cacheEntryRemoved;
+        } finally {
+          isUnsubscribedUserOrders = false;
+          if (reconnectTimerIdUserOrders !== null) {
+            clearTimeout(reconnectTimerIdUserOrders);
+          }
+          socketUserOrders?.close();
         }
       },
     }),
   }),
 });
 
-export const { useGetOrdersListQuery } = socketApi;
+export const { useGetOrdersListQuery, useGetUserOrdersQuery } = socketApi;

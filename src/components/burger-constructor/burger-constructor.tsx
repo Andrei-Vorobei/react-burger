@@ -13,9 +13,10 @@ import {
 } from '@/services/ingredients/reduser';
 import { Button, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { IngredientContainer } from '@components/ingredient-container/ingredient-container';
+import { ModalLoader } from '@components/modal-loader/modal-loader';
 import { ModalLogin } from '@components/modal-login/modal-login';
 import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
@@ -36,6 +37,7 @@ export const BurgerConstructor: React.FC = () => {
   const orderList = useAppSelector(getOrderList);
   const orderNumber = useAppSelector(getOrderNumber);
   const [postOrder] = usePostOrderMutation();
+  const timerIdRef = useRef<NodeJS.Timeout | null>(null);
 
   const postOrderHandler = (): void => {
     if (!user && isAuthChecked) {
@@ -44,19 +46,32 @@ export const BurgerConstructor: React.FC = () => {
       return;
     }
 
-    postOrder({ ingredients: orderList })
-      .then(({ data }) => {
-        const orderNumber = data?.order.number;
-        const burgerName = data?.name ?? '';
-        dispatch(setOrderNumber(orderNumber));
-        dispatch(setBurgerName(burgerName));
-        setModalState({ title: burgerName, content: 'order' });
-        openModal();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    openModal();
+    setModalState({ title: 'Заказ оформляется', content: 'loader' });
+    timerIdRef.current = setTimeout(() => {
+      postOrder({ ingredients: orderList })
+        .then(({ data }) => {
+          const orderNumber = data?.order.number;
+          const burgerName = data?.name ?? '';
+          dispatch(setOrderNumber(orderNumber));
+          dispatch(setBurgerName(burgerName));
+          closeModal();
+          setModalState({ title: burgerName, content: 'order' });
+          openModal();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, 15000);
   };
+
+  useEffect(() => {
+    return (): void => {
+      if (timerIdRef.current) {
+        clearTimeout(timerIdRef.current);
+      }
+    };
+  }, []);
 
   const onCloseLoginModal = (): void => {
     closeModal();
@@ -102,7 +117,7 @@ export const BurgerConstructor: React.FC = () => {
           <Button
             htmlType="button"
             onClick={postOrderHandler}
-            disabled={!burgerConstructor.bun}
+            disabled={!burgerConstructor.bun || modalState.content === 'loader'}
           >
             Оформить заказ
           </Button>
@@ -111,6 +126,7 @@ export const BurgerConstructor: React.FC = () => {
               {modalState.content === 'order' && (
                 <OrderDetails orderNumber={orderNumber} />
               )}
+              {modalState.content === 'loader' && <ModalLoader />}
               {modalState.content === 'auth' && (
                 <ModalLogin onClose={onCloseLoginModal} />
               )}

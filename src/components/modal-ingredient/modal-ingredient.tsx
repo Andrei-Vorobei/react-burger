@@ -1,14 +1,9 @@
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
-import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
-import { clsx } from 'clsx';
 import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router';
 
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
-import { ModalOverlay } from '../modal-overlay/modal-overlay';
-
-import styles from './modal-ingredient.module.css';
+import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
+import { Modal } from '@components/modal/modal';
 
 export const ModalIngredient: React.FC = () => {
   const { id } = useParams();
@@ -33,23 +28,9 @@ export const ModalIngredient: React.FC = () => {
     };
   }, []);
 
-  return createPortal(
-    <>
-      <ModalOverlay onClose={handleClose} />
-      <div className={styles.modal}>
-        <CloseIcon
-          type="primary"
-          onClick={() => handleClose()}
-          className={styles.close_icon}
-        />
-        <div className={styles.modal_title}>
-          <div className={clsx(styles.title, 'text text_type_main-large pt-1 pb-1')}>
-            Детали ингредиента
-          </div>
-        </div>
-        <IngredientDetails currentIngredient={currentIngredient} />
-      </div>
-    </>,
-    document.getElementById('modal')!
+  return (
+    <Modal onClose={handleClose} title="Детали ингредиента">
+      <IngredientDetails currentIngredient={currentIngredient} />
+    </Modal>
   );
 };

@@ -1,15 +1,11 @@
-import { useAppDispatch, useAppSelector, useModal } from '@/hooks';
-import { ingredientModal } from '@/services/ingredients/actions';
+import { useAppSelector } from '@/hooks';
 import { useGetIngredientsQuery } from '@/services/ingredients/api';
-import { getIngredient, getCounts } from '@/services/ingredients/reduser';
+import { getCounts } from '@/services/ingredients/reduser';
 import { Tab, Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { IngredientCard } from '@components/ingredient-card/ingredient-card';
-
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
-import { Modal } from '../modal/modal';
 
 import styles from './burger-ingredients.module.css';
 
@@ -23,19 +19,11 @@ export const BurgerIngredients: React.FC = () => {
     skipPollingIfUnfocused: true,
   });
 
-  const { isModalOpen, closeModal } = useModal(false);
   const [tabValue, setTabvalue] = useState('bun');
   const bunRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const sauceRef = useRef<HTMLDivElement>(null);
-  const currentIngredient = useAppSelector(getIngredient);
   const counts = useAppSelector(getCounts);
-  const dispatch = useAppDispatch();
-
-  const onClose = (): void => {
-    closeModal();
-    dispatch(ingredientModal(null));
-  };
 
   const bun = useMemo(() => {
     return ingredients?.filter((item) => item.type === 'bun');
@@ -82,18 +70,12 @@ export const BurgerIngredients: React.FC = () => {
 
   return (
     <section className={styles.burger_ingredients}>
-      {isModalOpen && (
-        <Modal onClose={onClose} title="Детали ингредиента">
-          <IngredientDetails currentIngredient={currentIngredient} />
-        </Modal>
-      )}
       <nav>
         <ul className={styles.menu}>
           <Tab
             value="bun"
             active={tabValue === 'bun'}
             onClick={() => {
-              /* TODO */
               tabHandler(bunRef.current);
             }}
           >
@@ -103,7 +85,6 @@ export const BurgerIngredients: React.FC = () => {
             value="sauce"
             active={tabValue === 'sauce'}
             onClick={() => {
-              /* TODO */
               tabHandler(sauceRef.current);
             }}
           >
@@ -113,7 +94,6 @@ export const BurgerIngredients: React.FC = () => {
             value="main"
             active={tabValue === 'main'}
             onClick={() => {
-              /* TODO */
               tabHandler(mainRef.current);
             }}
           >

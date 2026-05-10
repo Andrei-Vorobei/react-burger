@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: 40px;
+}
+
+.orders_page {
+  display: flex;
+  flex-direction: column;
+  width: 1240px;
+  margin-bottom: 40px;
+}
+
+.orders_content {
+  display: flex;
+  gap: 56px;
+  margin-top: 20px;
+}
+
+.orders_statistics {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  width: 584px;
+}
+
+.statistics_content {
+  display: flex;
+  gap: 32px;
+}
+
+.orders_number_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.orders_done_list {
+  color: var(--colors-interface-success);
+}
+
+.orders_pending_list {
+  color: var(--text-primary-color);
+}
+
+.order_columns {
+  display: flex;
+  gap: 52px;
+}
+
+.column {
+  width: 272px;
+}
