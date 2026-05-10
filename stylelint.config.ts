@@ -287,6 +287,10 @@ const config: Config = {
     ],
     'selector-attribute-quotes': 'always',
     'selector-class-pattern': '^[a-z][a-zA-Z0-9_]+$',
+    'shorthand-property-no-redundant-values': null,
+    'color-function-notation': null,
+    'color-function-alias-notation': null,
+    'alpha-value-notation': null,
   },
 };
 

@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 600px;
   padding-bottom: 40px;
+  overflow-y: auto;
   color: var(--text-primary-color);
 }
 

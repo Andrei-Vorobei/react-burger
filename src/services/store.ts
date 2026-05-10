@@ -5,13 +5,24 @@ import { authApi } from './auth/api';
 import { userSlice } from './auth/reduser';
 import { ingredientsApi } from './ingredients/api';
 import { ingredientSlice } from './ingredients/reduser';
+import { socketApi } from './socket/api';
 
-const rootReducer = combineSlices(ingredientSlice, ingredientsApi, userSlice, authApi);
+const rootReducer = combineSlices(
+  ingredientSlice,
+  ingredientsApi,
+  userSlice,
+  authApi,
+  socketApi
+);
 
 export const store = createStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(ingredientsApi.middleware, authApi.middleware),
+    getDefaultMiddleware().concat(
+      ingredientsApi.middleware,
+      authApi.middleware,
+      socketApi.middleware
+    ),
 });
 
 setupListeners(store.dispatch);

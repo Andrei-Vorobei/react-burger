@@ -10,7 +10,7 @@ import styles from './modal.module.css';
 type TModal = {
   children: React.ReactNode;
   onClose: () => void;
-  title?: string;
+  title?: string | React.ReactNode;
 };
 
 export const Modal: React.FC<TModal> = ({ children, onClose, title }) => {

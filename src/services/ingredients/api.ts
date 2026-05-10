@@ -1,5 +1,6 @@
 import { createApi, type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 import type { TIngredient } from '@utils/types';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
@@ -46,7 +47,10 @@ export const ingredientsApi = createApi({
   }),
   endpoints: (builder) => ({
     getIngredients: builder.query<{ data: TIngredient[] }, string>({
-      query: () => ({ url: '/ingredients', method: 'get' }),
+      query: () => ({
+        url: '/ingredients',
+        method: 'get',
+      }),
     }),
     postOrder: builder.mutation<
       { order: { number: number }; name: string },
@@ -56,6 +60,7 @@ export const ingredientsApi = createApi({
         url: '/orders',
         method: 'post',
         data: body,
+        headers: { Authorization: Cookies.get('accessToken') },
       }),
     }),
   }),

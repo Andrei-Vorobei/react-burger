@@ -16,6 +16,8 @@ export const pageNotFoundImage = new URL(
 ).href;
 
 export const host = 'https://new-stellarburgers.education-services.ru';
+export const baseUrlSocket = `${host}/api`;
+export const webSocketUrl = 'wss://new-stellarburgers.education-services.ru/orders';
 
 export const defaultOptions = {
   method: 'POST',

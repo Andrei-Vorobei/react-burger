@@ -26,6 +26,7 @@ export const AppHeader: React.FC = memo(() => {
           </NavLink>
           <NavLink
             to="/feed"
+            replace={false}
             className={({ isActive }) =>
               clsx(styles.link, 'ml-10', { [styles.link_active]: isActive })
             }
